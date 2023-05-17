@@ -97,7 +97,7 @@
                 "example": {
                   "status": "CONFLICT",
                   "reason": "Integrity constraint has been violated.",
-                  "message": "could not execute statement; SQL [n/a]; constraint [uq_category_name]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement",
+                  "message": "could not execute statsment; SQL [n/a]; constraint [uq_category_name]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statsment",
                   "timestamp": "2022-09-07 09:10:50"
                 },
                 "schema": {
@@ -231,7 +231,7 @@
                 "example": {
                   "status": "CONFLICT",
                   "reason": "Integrity constraint has been violated.",
-                  "message": "could not execute statement; SQL [n/a]; constraint [uq_category_name]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement",
+                  "message": "could not execute statsment; SQL [n/a]; constraint [uq_category_name]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statsment",
                   "timestamp": "2022-09-07 09:10:50"
                 },
                 "schema": {
@@ -295,7 +295,7 @@
                 "example": {
                   "status": "CONFLICT",
                   "reason": "Integrity constraint has been violated.",
-                  "message": "could not execute statement; SQL [n/a]; constraint [uq_compilation_name]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement",
+                  "message": "could not execute statsment; SQL [n/a]; constraint [uq_compilation_name]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statsment",
                   "timestamp": "2022-09-07 09:10:50"
                 },
                 "schema": {
@@ -433,7 +433,7 @@
           {
             "description": "список состояний в которых находятся искомые события",
             "in": "query",
-            "name": "states",
+            "name": "statss",
             "required": false,
             "schema": {
               "type": "array",
@@ -593,7 +593,7 @@
                 "example": {
                   "status": "FORBIDDEN",
                   "reason": "For the requested operation the conditions are not met.",
-                  "message": "Cannot publish the event because it's not in the right state: PUBLISHED",
+                  "message": "Cannot publish the event because it's not in the right stats: PUBLISHED",
                   "timestamp": "2022-09-07 09:10:50"
                 },
                 "schema": {
@@ -733,7 +733,7 @@
                 "example": {
                   "status": "CONFLICT",
                   "reason": "Integrity constraint has been violated.",
-                  "message": "could not execute statement; SQL [n/a]; constraint [uq_email]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement",
+                  "message": "could not execute statsment; SQL [n/a]; constraint [uq_email]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statsment",
                   "timestamp": "2022-09-07 09:10:50"
                 },
                 "schema": {
@@ -1899,7 +1899,7 @@
                 "example": {
                   "status": "CONFLICT",
                   "reason": "Integrity constraint has been violated.",
-                  "message": "could not execute statement; SQL [n/a]; constraint [uq_request]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement",
+                  "message": "could not execute statsment; SQL [n/a]; constraint [uq_request]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statsment",
                   "timestamp": "2022-09-07 09:10:50"
                 },
                 "schema": {
@@ -2252,7 +2252,7 @@
             "example": true,
             "default": true
           },
-          "state": {
+          "stats": {
             "type": "string",
             "description": "Список состояний жизненного цикла события",
             "example": "PUBLISHED",
@@ -2678,7 +2678,7 @@
             "description": "Нужна ли пре-модерация заявок на участие",
             "example": false
           },
-          "stateAction": {
+          "statsAction": {
             "type": "string",
             "description": "Новое состояние события",
             "enum": [
@@ -2743,7 +2743,7 @@
             "description": "Нужна ли пре-модерация заявок на участие",
             "example": false
           },
-          "stateAction": {
+          "statsAction": {
             "type": "string",
             "description": "Изменение сотояния события",
             "example": "CANCEL_REVIEW",
