@@ -6,13 +6,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.lang.Nullable;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.stats.client.BaseClient;
 
 import java.util.Map;
 
-public class StatsClient extends BaseClient {
+public final class StatsClient extends BaseClient {
     private static final String API_PREFIX = "/stats";
 
     public StatsClient(@Value("${stats.url}") String serverUrl, RestTemplateBuilder builder) {
@@ -23,6 +22,7 @@ public class StatsClient extends BaseClient {
                         .build()
         );
     }
+
     public ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
         return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
     }

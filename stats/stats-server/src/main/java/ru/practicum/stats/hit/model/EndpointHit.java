@@ -1,4 +1,4 @@
-package ru.practicum.stats.model;
+package ru.practicum.stats.hit.model;
 
 
 import lombok.Data;
@@ -23,10 +23,10 @@ public class EndpointHit {
     @Column(nullable = false, length = 512)
     private String app;
 
-    @Column(nullable = false, length = 512)
+    @Column(nullable = false, length = 2048)
     private String uri;
 
-    @Column(nullable = false, length = 512)
+    @Column(nullable = false, length = 45)
     private String ip;
 
     @Column( nullable = false)

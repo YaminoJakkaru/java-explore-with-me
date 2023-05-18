@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.stats.dto.StoredEndpointHitDto;
 import ru.practicum.stats.hit.HitRepository;
-import ru.practicum.stats.model.EndpointHit;
+import ru.practicum.stats.hit.mapper.HitMapper;
 
 
 @Service
-public class HitServiceImpl implements HitService {
+public final class HitServiceImpl implements HitService {
 
     private final HitRepository hitRepository;
 
@@ -19,10 +19,7 @@ public class HitServiceImpl implements HitService {
 
     @Override
     public void addEndpointHit(StoredEndpointHitDto storedEndpointHitDto) {
-        EndpointHit endpointHit = new EndpointHit()
-                .setApp(storedEndpointHitDto.getApp())
-                .setIp(storedEndpointHitDto.getIp())
-                .setUri(storedEndpointHitDto.getUri());
-        hitRepository.save(endpointHit);
+
+        hitRepository.save(HitMapper.toEndpointHit(storedEndpointHitDto));
     }
 }

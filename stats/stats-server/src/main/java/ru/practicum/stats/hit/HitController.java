@@ -6,7 +6,7 @@ import ru.practicum.stats.dto.StoredEndpointHitDto;
 
 @RestController
 @RequestMapping(path = "/hit")
-public class HitController {
+public final class HitController {
 
     private final HitService hitService;
 

@@ -1,5 +1,6 @@
 package ru.practicum.stats.dto;
 
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -7,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Accessors(chain = true)
 @Data
-public class StoredEndpointHitDto {
+public final class StoredEndpointHitDto {
 
     private String app;
 
