@@ -37,11 +37,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getUsers(List<Long> ids,  Pageable pageable) {
-        List<UserDto> userDtos = ids == null ?
+        return ids == null ?
                     userRepository.findAll(pageable).map(User::toUserDto).toList() :
             userRepository.findUserByIdIn(ids, pageable).map(User::toUserDto).toList();
-        log.info(userDtos.toString());
-        return userDtos;
     }
 
 

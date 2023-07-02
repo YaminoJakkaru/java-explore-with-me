@@ -2,6 +2,7 @@ package ru.practicum.main.adminController;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping(path = "/admin/events")
 @Validated
 public class AdminEventController {
@@ -30,11 +31,13 @@ public class AdminEventController {
         this.eventService = eventService;
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
     @PatchMapping("/{eventId}")
     public EventDto updateEvent(@Positive @PathVariable Long eventId, @RequestBody UpdateEventDto updateEventDto) {
         return eventService.updateEvent(eventId, updateEventDto);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
     @GetMapping
     public List<EventDto> findEvents(@RequestParam(required = false) String rangeStart,
                                      @RequestParam(required = false) String rangeEnd,

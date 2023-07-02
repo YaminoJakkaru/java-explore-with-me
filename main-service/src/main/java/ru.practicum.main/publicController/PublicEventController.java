@@ -2,12 +2,10 @@ package ru.practicum.main.publicController;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.practicum.main.event.dto.EventDto;
 import ru.practicum.main.event.dto.EventShortDto;
 import ru.practicum.main.event.service.EventService;
@@ -20,7 +18,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping(path = "/events")
 @Validated
 public class PublicEventController {
@@ -32,6 +30,7 @@ public class PublicEventController {
         this.eventService = eventService;
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
     @GetMapping
     public List<EventShortDto> findPublishedEvents(@RequestParam(required = false) String rangeStart,
                                                    @RequestParam(required = false) String rangeEnd,
@@ -52,6 +51,7 @@ public class PublicEventController {
                 sort, PageRequest.of(from > 0 ? from / size : 0, size));
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
     @GetMapping("/{id}")
     public EventDto findEventById(@Positive @PathVariable long id) {
         return eventService.findEventById(id);

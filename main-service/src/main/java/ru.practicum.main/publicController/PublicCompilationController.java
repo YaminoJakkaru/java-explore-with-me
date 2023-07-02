@@ -2,12 +2,10 @@ package ru.practicum.main.publicController;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.practicum.main.compilation.dto.CompilationDto;
 import ru.practicum.main.compilation.service.CompilationService;
 
@@ -15,7 +13,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping(path = "/compilations")
 @Validated
 public class PublicCompilationController {
@@ -27,6 +25,7 @@ public class PublicCompilationController {
         this.compilationService = compilationService;
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
     @GetMapping
     public List<CompilationDto> findCompilationById(@RequestParam(required = false) Boolean pinned,
                                                     @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
@@ -34,6 +33,7 @@ public class PublicCompilationController {
         return compilationService.findCompilation(pinned, PageRequest.of(from > 0 ? from / size : 0, size));
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
     @GetMapping("/{compId}")
     public  CompilationDto findCompilationById(@Positive @PathVariable long compId) {
         return compilationService.findCompilationById(compId);

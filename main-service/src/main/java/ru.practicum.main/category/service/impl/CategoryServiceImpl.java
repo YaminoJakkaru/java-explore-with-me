@@ -31,12 +31,14 @@ public class CategoryServiceImpl implements CategoryService {
         this.eventRepository = eventRepository;
     }
 
+    @Transactional
     @Override
     public CategoryDto addCategory(CategoryDto categoryDto) {
         log.info("add category " + categoryDto.getName());
         return categoryRepository.save(categoryDto.toCategory()).toCategoryDto();
     }
 
+    @Transactional
     @Override
     public CategoryDto updateCategory( long id,CategoryDto categoryDto) {
         Category oldCategory = categoryRepository.findCategoryById(id);
@@ -67,6 +69,7 @@ public class CategoryServiceImpl implements CategoryService {
         return category.toCategoryDto();
     }
 
+    @Transactional
     @Override
     public void deleteCategory(long id) {
         if (eventRepository.findFirstEventByCategoryId(id) != null) {

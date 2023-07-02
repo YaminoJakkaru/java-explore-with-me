@@ -2,6 +2,7 @@ package ru.practicum.main.privateController;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping(path = "/users/{userId}/events")
 @Validated
 public class PrivateEventController {
@@ -35,17 +36,20 @@ public class PrivateEventController {
         this.requestService = requestService;
     }
 
+    @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
     public EventDto addEvent(@Positive @PathVariable long userId, @Valid @RequestBody NewEventDto newEventDto) {
         return eventService.addEvent(userId, newEventDto);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
     @PatchMapping("/{eventId}")
     public EventDto updateEvent(@Positive @PathVariable Long userId, @Positive @PathVariable Long eventId,
                                 @RequestBody UpdateEventDto updateEventDto) {
         return eventService.updateEvent(userId, eventId, updateEventDto);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
     @GetMapping
     public List<EventShortDto> findUserEvents(@Positive @PathVariable Long userId,
                                               @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
@@ -53,11 +57,13 @@ public class PrivateEventController {
         return eventService.findUserEvents(userId, PageRequest.of(from > 0 ? from / size : 0, size));
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
     @GetMapping("/{eventId}")
     public EventDto findEventById(@Positive @PathVariable Long userId, @Positive @PathVariable Long eventId) {
        return eventService.findEventById(userId, eventId);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
     @PatchMapping("/{eventId}/requests")
     public EventRequestStatusUpdateResult changeRequestsStatus(@Positive @PathVariable Long userId,
                                                                @Positive @PathVariable Long eventId,
@@ -66,6 +72,7 @@ public class PrivateEventController {
         return requestService.changeRequestsStatus(userId, eventId, requestIds, status);
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
     @GetMapping("/{eventId}/requests")
     public List<RequestDto> findRequestsByEventInitiatorId(@Positive @PathVariable Long userId,
                                                 @Positive @PathVariable Long eventId) {

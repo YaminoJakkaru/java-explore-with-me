@@ -16,6 +16,7 @@ import ru.practicum.main.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Data
@@ -47,6 +48,7 @@ public class Event {
 
     @CreationTimestamp
     @Column(name = "event_date", nullable = false)
+
     private LocalDateTime eventDate;
 
     @ManyToOne
@@ -91,8 +93,9 @@ public class Event {
                 .setDescription(this.getDescription())
                 .setEventDate(this.getEventDate())
                 .setInitiator(this.getInitiator().toUserDto())
-                .setLocation(new Location(this.getLat(),this.getLon()))
+                .setLocation(new Location().setLat(this.getLat()).setLon(this.getLon()))
                 .setPaid(this.isPaid())
+                .setCreatedOn(this.getCreateOn())
                 .setParticipantLimit(this.getParticipantLimit())
                 .setRequestModeration(this.isRequestModeration())
                 .setState(this.getState())

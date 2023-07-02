@@ -18,7 +18,6 @@ import ru.practicum.main.event.state.StateAction;
 import ru.practicum.main.category.CategoryRepository;
 import ru.practicum.main.category.model.Category;
 import ru.practicum.main.exception.DataValidationException;
-import ru.practicum.main.request.RequestRepository;
 import ru.practicum.main.user.UserRepository;
 import ru.practicum.main.user.model.User;
 import ru.practicum.main.exception.NotFoundException;
@@ -36,16 +35,14 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
-    private final RequestRepository requestRepository;
+
 
     @Autowired
     public EventServiceImpl(EventRepository eventRepository, UserRepository userRepository,
-                            CategoryRepository categoryRepository, RequestRepository requestRepository) {
+                            CategoryRepository categoryRepository) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
-        this.requestRepository = requestRepository;
-
     }
 
 
@@ -60,9 +57,9 @@ public class EventServiceImpl implements EventService {
         if (user == null) {
             throw new DataValidationException("User with id=" + userId + "was not found");
         }
-        Category category = categoryRepository.findCategoryById(newEventDto.getCategoryId());
+        Category category = categoryRepository.findCategoryById(newEventDto.getCategory());
         if (category == null) {
-            throw new DataValidationException("Category with id=" + newEventDto.getCategoryId() + "was not found");
+            throw new DataValidationException("Category with id=" + newEventDto.getCategory() + "was not found");
         }
         return eventRepository.save(newEventDto.toEvent().setInitiator(user).setCategory(category)).toEventDto();
     }
@@ -224,17 +221,17 @@ public class EventServiceImpl implements EventService {
         }
 
         List<State> states = new ArrayList<>(EnumSet.allOf(State.class));
-        return eventRepository.findEvents(LocalDateTime.MIN, LocalDateTime.MAX, List.of(userId), states,
+        return eventRepository.findEvents(null, null, List.of(userId), states,
                         null, null, null, null, pageable, null)
                 .stream().map(Event::toEventShortDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<EventShortDto> findPublishedEvents(LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories,
+    public List<EventShortDto> findPublishedEvents(LocalDateTime start, LocalDateTime end, List<Long> categories,
                                      String text, Boolean paid, Boolean onlyAvailable, EventsSort eventsSort,
                                      Pageable pageable) {
         List<State> states = List.of(State.PUBLISHED);
-        List<EventShortDto> eventDtos = eventRepository.findEvents(LocalDateTime.MIN, LocalDateTime.MAX, null, states,
+        List<EventShortDto> eventDtos = eventRepository.findEvents(start, end, null, states,
                         categories, text, paid, onlyAvailable, pageable, eventsSort)
                 .stream().map(Event::toEventShortDto).collect(Collectors.toList());
         eventDtos.forEach(event -> eventRepository.addViewToEventById(event.getId()));
