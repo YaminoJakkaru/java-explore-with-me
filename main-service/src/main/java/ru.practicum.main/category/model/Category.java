@@ -16,7 +16,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, length = 252, unique = true)
+    @Column(nullable = false, length = 50, unique = true)
     private String name;
 
     public CategoryDto toCategoryDto() {

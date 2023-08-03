@@ -1,19 +1,24 @@
 package ru.practicum.main.request.model;
 
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import ru.practicum.main.event.model.Event;
 import ru.practicum.main.request.dto.RequestDto;
 import ru.practicum.main.request.status.Status;
-import ru.practicum.main.event.model.Event;
 import ru.practicum.main.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Accessors(chain = true)
 @Entity
 @Table(name = "request",
@@ -46,7 +51,7 @@ public class Request {
     public RequestDto toRequestDto() {
     return  new RequestDto()
             .setId(this.getId())
-            .setCreateOn(this.getCreated())
+            .setCreated(this.getCreated())
             .setEvent(this.getEvent().getId())
             .setRequester(this.getRequester().getId())
             .setStatus(this.getStatus());

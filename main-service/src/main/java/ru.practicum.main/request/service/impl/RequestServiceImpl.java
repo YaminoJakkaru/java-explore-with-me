@@ -10,6 +10,7 @@ import ru.practicum.main.event.state.State;
 import ru.practicum.main.exception.DataValidationException;
 import ru.practicum.main.exception.NotFoundException;
 import ru.practicum.main.request.RequestRepository;
+import ru.practicum.main.request.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.main.request.dto.EventRequestStatusUpdateResult;
 import ru.practicum.main.request.dto.RequestDto;
 import ru.practicum.main.request.model.Request;
@@ -39,35 +40,45 @@ public class RequestServiceImpl implements RequestService {
 
 
     @Override
+    @Transactional
     public RequestDto addRequest(long userId, long eventId) {
         User user = userRepository.findUserById(userId);
         if (user == null) {
             throw new DataValidationException("User with id=" + userId + " was not found");
         }
-        Event event = eventRepository.findEventByIdAndState(eventId, State.PUBLISHED);
+        Event event = eventRepository.findEventById(eventId);
         if (event == null) {
             throw new NotFoundException("Event with id= " + eventId + " was not found");
         }
         if (event.getInitiator().getId() == userId) {
             throw new DataValidationException("You cannot submit a request to participate in your event");
         }
-        if (event.getParticipantLimit() == event.getConfirmedRequests()) {
+        if (event.getParticipantLimit() != 0 && event.getParticipantLimit() <= event.getConfirmedRequests()) {
             throw new DataValidationException("You cannot exceed the limit");
         }
         if (!event.getState().equals(State.PUBLISHED)) {
-            throw new DataValidationException("Нou cannot participate in an unpublished event");
+            throw new DataValidationException("You cannot participate in an unpublished event");
+        }
+        if (!event.isRequestModeration()) {
+            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+            eventRepository.save(event);
         }
         Request request = new Request()
                 .setRequester(user)
                 .setEvent(event)
-                .setStatus(event.isRequestModeration() ? Status.PENDING : Status.CONFIRMED);
+                .setStatus(event.isRequestModeration() && event.getParticipantLimit() != 0 ? Status.PENDING
+                        : Status.CONFIRMED);
+        log.info("user " + userId + " added request to participate " + request.getId() + " in the event " + eventId);
           return  requestRepository.save(request).toRequestDto();
     }
 
     @Override
     @Transactional
-    public EventRequestStatusUpdateResult changeRequestsStatus(long userId, long eventId, List<Long> requestsIds,
-                                                               Status status) {
+    public EventRequestStatusUpdateResult changeRequestsStatus(long userId, long eventId,
+                                                               EventRequestStatusUpdateRequest
+                                                                       eventRequestStatusUpdateRequest) {
+        List<Long> requestsIds = eventRequestStatusUpdateRequest.getRequestIds();
+        Status status = eventRequestStatusUpdateRequest.getStatus();
         Event event = eventRepository.findEventByIdAndState(eventId, State.PUBLISHED);
         if (event == null || event.getInitiator().getId() != userId) {
             throw new NotFoundException("Event with id= " + eventId + " was not found");
@@ -87,16 +98,18 @@ public class RequestServiceImpl implements RequestService {
         requestRepository.updateRequestStatusByIdIn(requestsIds, status);
         requestsIds.forEach(id -> requests.get(id).setStatus(status));
         if (status.equals(Status.CONFIRMED)) {
-            eventRepository.addConfirmedRequestsToEventById(requestsIds);
-            if (event.getConfirmedRequests() + requestsIds.size() == event.getParticipantLimit()) {
+            event.setConfirmedRequests( event.getConfirmedRequests() + requestsIds.size());
+            eventRepository.save(event);
+            if(event.getConfirmedRequests() + requestsIds.size() == event.getParticipantLimit()){
                 requestRepository.updateRequestStatusByEventId(eventId, Status.PENDING, Status.REJECTED);
                 for (RequestDto requestDto : requests.values()) {
-                    if ( requestDto.getStatus().equals(Status.PENDING)) {
+                    if (requestDto.getStatus().equals(Status.PENDING)) {
                         requestDto.setStatus(Status.REJECTED);
                     }
                 }
             }
         }
+        log.info("requests " + requestsIds + " for the event " + eventId + " have status " + status);
         return new EventRequestStatusUpdateResult().
                 setConfirmedRequests(requests.values().stream()
                         .filter(requestDto -> requestDto.getStatus().equals(Status.CONFIRMED))
@@ -113,8 +126,9 @@ public class RequestServiceImpl implements RequestService {
         if (request == null || request.getRequester().getId() != userId) {
             throw new DataValidationException("Request with id "+ requestId + " was not found");
         }
-        requestRepository.updateRequestStatusById(requestId, Status.REJECTED);
-        request.setStatus(Status.REJECTED);
+        requestRepository.updateRequestStatusById(requestId, Status.CANCELED);
+        request.setStatus(Status.CANCELED);
+        log.info("user " + userId + "canceled request " + requestId);
         return request.toRequestDto();
     }
 

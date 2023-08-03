@@ -45,11 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (oldCategory == null) {
             throw new NotFoundException("Category with id="+ id +" was not found");
         }
-        if (categoryDto.getName().equals(oldCategory.getName())){
-            throw new CategoryNameException("could not execute statement; SQL [n/a];constraint [uq_category_name];" +
-                    " nested exception is org.hibernate.exception.ConstraintViolationException:" +
-                    " could not execute statement");
-        }
+
         oldCategory.setName(categoryDto.getName());
         log.info("update category " + id + " now name is " + categoryDto.getName());
         return categoryRepository.save(oldCategory).toCategoryDto();

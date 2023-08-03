@@ -1,18 +1,22 @@
 package ru.practicum.main.compilation.model;
 
 
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.Hibernate;
 import ru.practicum.main.compilation.dto.CompilationDto;
 import ru.practicum.main.event.model.Event;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Accessors(chain = true)
 @Entity
 @Table(name = "compilation")
@@ -22,7 +26,7 @@ public class Compilation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, length = 520)
+    @Column(nullable = false, length = 50)
     private String title;
 
     @Column( nullable = false)
@@ -34,6 +38,7 @@ public class Compilation {
             joinColumns = { @JoinColumn(name = "compilation_id") },
             inverseJoinColumns = { @JoinColumn(name = "event_id") }
     )
+    @ToString.Exclude
     private Set<Event> events = new HashSet<>() ;
 
     public void addEvent(Event event) {

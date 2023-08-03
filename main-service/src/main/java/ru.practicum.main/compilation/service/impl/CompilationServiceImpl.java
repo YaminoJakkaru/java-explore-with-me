@@ -11,6 +11,7 @@ import ru.practicum.main.compilation.dto.NewCompilationDto;
 import ru.practicum.main.compilation.dto.UpdateCompilationDto;
 import ru.practicum.main.compilation.model.Compilation;
 import ru.practicum.main.compilation.service.CompilationService;
+import ru.practicum.main.event.client.EventStatsClient;
 import ru.practicum.main.event.model.Event;
 import ru.practicum.main.event.repository.EventRepository;
 import ru.practicum.main.exception.DataValidationException;
@@ -27,12 +28,14 @@ public class CompilationServiceImpl implements CompilationService {
 
     private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
+    private final EventStatsClient eventStatsClient;
 
     @Autowired
-    public CompilationServiceImpl(CompilationRepository compilationRepository, EventRepository eventRepository) {
+    public CompilationServiceImpl(CompilationRepository compilationRepository, EventRepository eventRepository, EventStatsClient eventStatsClient) {
 
         this.compilationRepository = compilationRepository;
         this.eventRepository = eventRepository;
+        this.eventStatsClient = eventStatsClient;
     }
 
     @Override
@@ -44,7 +47,9 @@ public class CompilationServiceImpl implements CompilationService {
         }
         Compilation compilation = newCompilationDto.toCompilation();
         events.forEach(compilation::addEvent);
-        return compilationRepository.save(compilation).toCompilationDto();
+        CompilationDto compilationDto = compilationRepository.save(compilation).toCompilationDto();
+        compilationDto.getEvents().forEach(eventStatsClient::setViews);
+        return compilationDto;
     }
 
     @Override
@@ -70,7 +75,9 @@ public class CompilationServiceImpl implements CompilationService {
         if (updateCompilationDto.getPinned() != null) {
             compilation.setPinned(updateCompilationDto.getPinned());
         }
-        return compilationRepository.save(compilation).toCompilationDto();
+        CompilationDto compilationDto = compilationRepository.save(compilation).toCompilationDto();
+        compilationDto.getEvents().forEach(eventStatsClient::setViews);
+        return compilationDto;
     }
 
     @Override
@@ -89,16 +96,19 @@ public class CompilationServiceImpl implements CompilationService {
         if (compilation == null) {
             throw new NotFoundException("Compilation with id= " + id + " was not found");
         }
-        return compilation.toCompilationDto();
+       CompilationDto compilationDto = compilation.toCompilationDto();
+        compilationDto.getEvents().forEach(eventStatsClient::setViews);
+        return compilationDto;
     }
 
     @Override
-    public List<CompilationDto> findCompilation(Boolean pinned, Pageable pageable) {
+    public List<CompilationDto> findCompilations(Boolean pinned, Pageable pageable) {
 
-            return pinned == null ? compilationRepository.findAll(pageable)
+        List<CompilationDto> compilationDtos = pinned == null ? compilationRepository.findAll(pageable)
                     .map(Compilation::toCompilationDto).toList() :
                     compilationRepository.findCompilationByPinned(pinned, pageable)
                             .map(Compilation::toCompilationDto).toList();
-
+        compilationDtos.forEach(compilationDto -> compilationDto.getEvents().forEach(eventStatsClient::setViews));
+return compilationDtos;
     }
 }

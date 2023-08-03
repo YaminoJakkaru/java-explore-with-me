@@ -1,20 +1,20 @@
 package ru.practicum.main.privateController;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.main.event.dto.EventDto;
+import ru.practicum.main.event.dto.EventFullDto;
 import ru.practicum.main.event.dto.EventShortDto;
 import ru.practicum.main.event.dto.NewEventDto;
-import ru.practicum.main.event.dto.UpdateEventDto;
+import ru.practicum.main.event.dto.PublicUpdateEventDto;
 import ru.practicum.main.event.service.EventService;
+import ru.practicum.main.request.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.main.request.dto.EventRequestStatusUpdateResult;
 import ru.practicum.main.request.dto.RequestDto;
 import ru.practicum.main.request.service.RequestService;
-import ru.practicum.main.request.status.Status;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -24,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/users/{userId}/events")
 @Validated
+@Slf4j
 public class PrivateEventController {
 
     private final EventService eventService;
@@ -38,14 +39,14 @@ public class PrivateEventController {
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
-    public EventDto addEvent(@Positive @PathVariable long userId, @Valid @RequestBody NewEventDto newEventDto) {
+    public EventFullDto addEvent(@Positive @PathVariable long userId, @Valid @RequestBody NewEventDto newEventDto) {
         return eventService.addEvent(userId, newEventDto);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @PatchMapping("/{eventId}")
-    public EventDto updateEvent(@Positive @PathVariable Long userId, @Positive @PathVariable Long eventId,
-                                @RequestBody UpdateEventDto updateEventDto) {
+    public EventFullDto updateEvent(@Positive @PathVariable Long userId, @Positive @PathVariable Long eventId,
+                                    @Valid @RequestBody PublicUpdateEventDto updateEventDto) {
         return eventService.updateEvent(userId, eventId, updateEventDto);
     }
 
@@ -59,7 +60,7 @@ public class PrivateEventController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping("/{eventId}")
-    public EventDto findEventById(@Positive @PathVariable Long userId, @Positive @PathVariable Long eventId) {
+    public EventFullDto findEventById(@Positive @PathVariable Long userId, @Positive @PathVariable Long eventId) {
        return eventService.findEventById(userId, eventId);
     }
 
@@ -67,9 +68,11 @@ public class PrivateEventController {
     @PatchMapping("/{eventId}/requests")
     public EventRequestStatusUpdateResult changeRequestsStatus(@Positive @PathVariable Long userId,
                                                                @Positive @PathVariable Long eventId,
-                                                               @RequestBody List<Long> requestIds,
-                                                               @RequestBody Status status) {
-        return requestService.changeRequestsStatus(userId, eventId, requestIds, status);
+                                                               @RequestBody EventRequestStatusUpdateRequest
+                                                                           eventRequestStatusUpdateRequest) {
+
+        return requestService.changeRequestsStatus(userId, eventId,
+                eventRequestStatusUpdateRequest);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

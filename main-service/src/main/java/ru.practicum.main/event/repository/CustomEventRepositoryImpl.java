@@ -10,22 +10,16 @@ import ru.practicum.main.event.state.State;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
+
+
 public class CustomEventRepositoryImpl implements CustomEventRepository {
-    private final String BASIC_QUERY = "select e from Event as e where e.state in :states ";
-    private final String START_CLAUSE = "and e.eventDate >= :start ";
-    private final String END_CLAUSE = "and e.eventDate <= :end ";
-    private final String CATEGORY_CLAUSE = "and e.category.id in :categoryIds ";
-    private final String INITIATOR_ID_CLAUSE = "and e.initiator.id in :userIds ";
-    private final String TEXT_CLAUSE = "and (e.annotation like :text or e.description like :text) ";
-    private final String PAID_CLAUSE = "and e.paid = :paid ";
-    private final String ONLY_AVAILABLE_CLAUSE = "and e.confirmedRequests < e.participantLimit ";
-    private final String DATE_SORT = "order by e.eventDate asc ";
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -35,49 +29,43 @@ public class CustomEventRepositoryImpl implements CustomEventRepository {
                                   List<Long> categoryIds, String text, Boolean paid, Boolean onlyAvailable,
                                   Pageable pageable, EventsSort eventsSort) {
 
-        String query =  BASIC_QUERY;
+        CriteriaBuilder cb =  entityManager.getCriteriaBuilder();
+        CriteriaQuery<Event> cq = cb.createQuery(Event.class);
+        Root<Event> root = cq.from(Event.class);
+        cq.select(root);
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(root.get("state").in(states));
 
         if (start != null) {
-            query += START_CLAUSE;
-
+            predicates.add(cb.greaterThan(root.get("eventDate"), start));
         }
         if (end != null) {
-            query += END_CLAUSE;
-
+            predicates.add(cb.lessThan(root.get("eventDate"), end));
         }
         if(userIds != null) {
-            query += INITIATOR_ID_CLAUSE;
-
+            predicates.add(root.get("initiator").get("id").in(userIds));
         }
         if(categoryIds != null) {
-            query +=  CATEGORY_CLAUSE;
-
+            predicates.add(root.get("category").get("id").in(categoryIds));
         }
         if(text != null) {
-            query +=  TEXT_CLAUSE;
-
+            predicates.add(cb.or(cb.like(root.get("annotation"),"%" + text + "%"),
+                    cb.like(root.get("description"),"%" + text + "%")));
         }
         if (paid != null) {
-            query += PAID_CLAUSE;
-
+            predicates.add(cb.equal(root.get("paid"),paid));
         }
         if (onlyAvailable != null && onlyAvailable) {
-            query += ONLY_AVAILABLE_CLAUSE;
+            predicates.add(cb.le(root.get("confirmedRequests"),root.get("participantLimit")));
         }
-       query +=  DATE_SORT;
 
-        TypedQuery<Event> typedQuery =  entityManager.createQuery(query, Event.class)
-                .setParameter("states", states)
-                .setParameter("start", start)
-                .setParameter("end", end)
-                .setParameter("userIds", userIds)
-                .setParameter("categoryIds", categoryIds)
-                .setParameter("text", text)
-                .setParameter("paid", paid)
-                .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
-                .setMaxResults(pageable.getPageSize());
+        cq.where(predicates.toArray(Predicate[]::new));
+        cq.orderBy(cb.desc(root.get("id")));
+        TypedQuery<Event> tq = entityManager.createQuery(cq);
+        tq.setFirstResult((int) pageable.getOffset());
+        tq.setMaxResults(pageable.getPageSize());
 
-        return typedQuery.getResultList();
+        return tq.getResultList();
     }
 
 

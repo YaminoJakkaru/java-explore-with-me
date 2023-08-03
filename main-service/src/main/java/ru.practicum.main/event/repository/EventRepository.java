@@ -23,11 +23,7 @@ public interface EventRepository extends JpaRepository<Event,Long>, CustomEventR
     Event findFirstEventByCategoryId(long categoryId);
 
     @Modifying
-    @Query(value = "update Event as e set e.views = e.views + 1 where e.id = ?1")
-    void addViewToEventById(long eventId);
-
-    @Modifying
-    @Query(value = "update Event as e set e.confirmedRequests = e.confirmedRequests + 1 where e.id in ?1")
-    void addConfirmedRequestsToEventById(List<Long> eventIds);
+    @Query(value = "update Event as e set e.confirmedRequests =1000 where e.id = ?1")
+    void addConfirmedRequestsToEventById(Long eventId, Long confirmedRequests);
 
 }

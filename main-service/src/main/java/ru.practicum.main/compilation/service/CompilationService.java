@@ -17,5 +17,5 @@ public interface CompilationService {
 
     CompilationDto findCompilationById(long id);
 
-    List<CompilationDto> findCompilation(Boolean pinned, Pageable pageable);
+    List<CompilationDto> findCompilations(Boolean pinned, Pageable pageable);
 }

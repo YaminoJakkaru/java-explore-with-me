@@ -1,9 +1,11 @@
 package ru.practicum.stats.hit.model;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.CreationTimestamp;
+import ru.practicum.stats.dto.hit.ViewedEndpointHitDto;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -31,5 +33,12 @@ public class EndpointHit {
 
     @Column( nullable = false)
     @CreationTimestamp
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime instant;
+
+    public ViewedEndpointHitDto toViewedEndpointHitDto() {
+        return new ViewedEndpointHitDto()
+                .setApp(this.getApp())
+                .setUri(this.getUri());
+    }
 }

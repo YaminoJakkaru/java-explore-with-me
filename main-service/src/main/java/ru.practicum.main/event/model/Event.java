@@ -1,25 +1,25 @@
 package ru.practicum.main.event.model;
 
 
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import ru.practicum.main.category.model.Category;
-import ru.practicum.main.event.dto.EventDto;
+import ru.practicum.main.event.dto.EventFullDto;
 import ru.practicum.main.event.dto.EventShortDto;
 import ru.practicum.main.event.dto.Location;
 import ru.practicum.main.event.state.State;
-import ru.practicum.main.request.status.Status;
 import ru.practicum.main.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
-@Data
+
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Accessors(chain = true)
 @Entity
 @Table(name = "event")
@@ -29,7 +29,7 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2000)
     private String annotation;
 
     @ManyToOne
@@ -37,18 +37,18 @@ public class Event {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Category category;
 
-    @Column(columnDefinition = "bigint default 0")
-    private long confirmedRequests;
+    @Column(name = "confirmed_requests")
+    private long confirmedRequests = 0;
 
-    @Column(name = "create_date", nullable = false)
-    private LocalDateTime createOn;
+    @Column(name = "create_date", nullable = false, columnDefinition = "TIMESTAMP")
 
-    @Column(nullable = false, length = 520)
+    private LocalDateTime createOn = LocalDateTime.now();
+
+    @Column(nullable = false, length = 7000)
     String description;
 
-    @CreationTimestamp
-    @Column(name = "event_date", nullable = false)
 
+    @Column(name = "event_date", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime eventDate;
 
     @ManyToOne
@@ -62,13 +62,13 @@ public class Event {
     @Column(name = "location_lon", nullable = false)
     private double lon;
 
-    @Column(nullable = false, length = 520)
+    @Column(nullable = false)
     private boolean paid;
 
     @Column(name = "participant_limit", nullable = false)
     private long participantLimit;
 
-    @Column(name = "published_date", nullable = false)
+    @Column(name = "published_date",  columnDefinition = "TIMESTAMP")
     private LocalDateTime publishedOn;
 
     @Column(name = "request_moderation", columnDefinition = "boolean default true")
@@ -76,16 +76,14 @@ public class Event {
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "varchar(255) default 'PENDING'")
-    private State state;
+    private State state = State.PENDING;
 
-    @Column(nullable = false, length = 520)
+    @Column(nullable = false, length = 120)
     private String title;
 
-    @Column(columnDefinition = "bigint default 0")
-    private long views;
 
-    public EventDto toEventDto() {
-        return new EventDto()
+    public EventFullDto toEventFullDto() {
+        return new EventFullDto()
                 .setId(this.getId())
                 .setAnnotation(this.getAnnotation())
                 .setCategory(this.getCategory().toCategoryDto())
@@ -95,12 +93,12 @@ public class Event {
                 .setInitiator(this.getInitiator().toUserDto())
                 .setLocation(new Location().setLat(this.getLat()).setLon(this.getLon()))
                 .setPaid(this.isPaid())
+                .setPublishedOn(this.getPublishedOn())
                 .setCreatedOn(this.getCreateOn())
                 .setParticipantLimit(this.getParticipantLimit())
                 .setRequestModeration(this.isRequestModeration())
                 .setState(this.getState())
-                .setTitle(this.getTitle())
-                .setViews(this.getViews());
+                .setTitle(this.getTitle());
     }
 
     public EventShortDto toEventShortDto() {
@@ -112,8 +110,6 @@ public class Event {
                 .setEventDate(this.getEventDate())
                 .setInitiator(this.getInitiator().toUserDto())
                 .setPaid(this.isPaid())
-                .setTitle(this.getTitle())
-                .setViews(this.getViews());
+                .setTitle(this.getTitle());
     }
-
 }

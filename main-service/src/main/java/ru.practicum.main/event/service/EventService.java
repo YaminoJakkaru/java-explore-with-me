@@ -1,36 +1,35 @@
 package ru.practicum.main.event.service;
 
 import org.springframework.data.domain.Pageable;
-import ru.practicum.main.event.dto.EventDto;
-import ru.practicum.main.event.dto.EventShortDto;
-import ru.practicum.main.event.dto.NewEventDto;
-import ru.practicum.main.event.dto.UpdateEventDto;
+import ru.practicum.main.event.dto.*;
 import ru.practicum.main.event.sort.EventsSort;
 import ru.practicum.main.event.state.State;
 
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EventService {
 
-    EventDto addEvent(long userId, NewEventDto newEventDto);
+    EventFullDto addEvent(long userId, NewEventDto newEventDto);
 
-    EventDto updateEvent(long userId, long eventId, UpdateEventDto updateEventDto);
+    EventFullDto updateEvent(long userId, long eventId, PublicUpdateEventDto updateEventDto);
 
-    EventDto updateEvent(long eventId, UpdateEventDto updateEventDto);
+    EventFullDto updateEvent(long eventId, AdminUpdateEventDto updateEventDto);
 
-    EventDto findEventById(long userId, long eventId);
+    EventFullDto findEventById(long userId, long eventId);
 
-    EventDto findEventById(long eventId);
+    EventFullDto findEventById(long eventId, HttpServletRequest request);
 
-    List<EventDto> findEvents(LocalDateTime start, LocalDateTime end, List<Long> userIds, List<State> states,
-                              List<Long> categoryIds, Pageable pageable);
+    List<EventFullDto> findEvents(LocalDateTime start, LocalDateTime end, List<Long> userIds, List<State> states,
+                                  List<Long> categoryIds, Pageable pageable);
 
     List<EventShortDto> findUserEvents(long userId, Pageable pageable);
 
-    List<EventShortDto> findPublishedEvents(LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories, String text,
-                              Boolean paid, Boolean onlyAvailable, EventsSort eventsSort, Pageable pageable);
+    List<EventShortDto> findPublishedEvents(LocalDateTime rangeStart, LocalDateTime rangeEnd, List<Long> categories,
+                                            String text, Boolean paid, Boolean onlyAvailable, EventsSort eventsSort,
+                                            Pageable pageable, HttpServletRequest request);
 
 
 }

@@ -6,6 +6,7 @@ import ru.practicum.main.compilation.model.Compilation;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Accessors(chain = true)
 public class UpdateCompilationDto {
 
+    @Size(min = 3, max = 50)
     private String title;
 
 
