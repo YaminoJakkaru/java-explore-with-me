@@ -43,6 +43,8 @@ public class StatsServiceImpl implements StatsService {
             }
             viewedEndpointHitDtos.get(endpointHit.getUri()).addHit();
         }
-        return new ArrayList<>(viewedEndpointHitDtos.values());
+        List<ViewedEndpointHitDto> response = new ArrayList<>(viewedEndpointHitDtos.values());
+        response.sort((h1, h2) -> (int) (h2.getHits() - h1.getHits()));
+        return response;
     }
 }
