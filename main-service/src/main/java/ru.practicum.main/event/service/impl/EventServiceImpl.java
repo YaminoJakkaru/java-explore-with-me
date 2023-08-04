@@ -170,13 +170,14 @@ public class EventServiceImpl implements EventService {
             event.setLon(updateEventDto.getLocation().getLon());
         }
         if (updateEventDto.getPaid() != null) {
+
             event.setPaid(updateEventDto.getPaid());
         }
         if (updateEventDto.getParticipantLimit() != null) {
             event.setParticipantLimit(updateEventDto.getParticipantLimit());
         }
         if (updateEventDto.getRequestModeration() != null) {
-            event.setPaid(updateEventDto.getRequestModeration());
+            event.setRequestModeration(updateEventDto.getRequestModeration());
         }
         if (updateEventDto.getStateAction() != null) {
             if (!event.getState().equals(State.PENDING)) {
