@@ -29,7 +29,7 @@ public class PublicCategoryController {
     @GetMapping
     public List<CategoryDto> findCategories(@PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                             @Positive @RequestParam(defaultValue = "10") Integer size) {
-        return categoryService.findCategories( PageRequest.of(from > 0 ? from / size : 0, size));
+        return categoryService.findCategories( PageRequest.of(from / size, size));
     }
 
     @ResponseStatus(value = HttpStatus.OK)

@@ -29,7 +29,7 @@ public class PublicCompilationController {
     public List<CompilationDto> findCompilationById(@RequestParam(required = false) Boolean pinned,
                                                     @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                                     @Positive @RequestParam(defaultValue = "10") Integer size) {
-        return compilationService.findCompilations(pinned, PageRequest.of(from > 0 ? from / size : 0, size));
+        return compilationService.findCompilations(pinned, PageRequest.of(from / size, size));
     }
 
     @ResponseStatus(value = HttpStatus.OK)

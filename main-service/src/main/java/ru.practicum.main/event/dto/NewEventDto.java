@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
-public class NewEventDto {
+public class  NewEventDto {
 
     @NotBlank
     @Size(min = 20, max = 2000)

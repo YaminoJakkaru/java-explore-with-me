@@ -55,7 +55,7 @@ public class PrivateEventController {
     public List<EventShortDto> findUserEvents(@Positive @PathVariable Long userId,
                                               @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                               @Positive @RequestParam(defaultValue = "10") Integer size) {
-        return eventService.findUserEvents(userId, PageRequest.of(from > 0 ? from / size : 0, size));
+        return eventService.findUserEvents(userId, PageRequest.of(from / size, size));
     }
 
     @ResponseStatus(value = HttpStatus.OK)

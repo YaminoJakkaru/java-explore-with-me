@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.main.category.CategoryRepository;
 import ru.practicum.main.category.dto.CategoryDto;
-import ru.practicum.main.category.exception.CategoryNameException;
 import ru.practicum.main.category.model.Category;
 import ru.practicum.main.category.service.CategoryService;
 import ru.practicum.main.event.repository.EventRepository;
@@ -41,14 +40,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public CategoryDto updateCategory( long id,CategoryDto categoryDto) {
-        Category oldCategory = categoryRepository.findCategoryById(id);
-        if (oldCategory == null) {
-            throw new NotFoundException("Category with id="+ id +" was not found");
+        int response = categoryRepository.updateNameById(categoryDto.getName(), id);
+        if (response == 0) {
+            throw new NotFoundException("Category with id = " + id + "not found");
         }
-
-        oldCategory.setName(categoryDto.getName());
         log.info("update category " + id + " now name is " + categoryDto.getName());
-        return categoryRepository.save(oldCategory).toCategoryDto();
+        categoryDto.setId(id);
+        return categoryDto;
     }
 
     @Override
@@ -71,6 +69,9 @@ public class CategoryServiceImpl implements CategoryService {
         if (eventRepository.findFirstEventByCategoryId(id) != null) {
             throw  new DataValidationException("The category is not empty");
         }
-        categoryRepository.deleteCategoryById(id);
+        int response =  categoryRepository.removeCategoryById(id);;
+        if(response == 0) {
+            throw new NotFoundException("User with id = " + id + " not found");
+        }
     }
 }

@@ -45,7 +45,7 @@ public class AdminUserController {
     public List<UserDto> getAllUsers(@RequestParam(required = false) List<Long> ids,
                                      @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                      @Positive @RequestParam(defaultValue = "10") Integer size) {
-        List<UserDto> userDtos = userService.getUsers(ids,  PageRequest.of(from > 0 ? from / size : 0, size));
+        List<UserDto> userDtos = userService.getUsers(ids,  PageRequest.of(from/ size, size));
         log.info(userDtos.toString());
         return userDtos;
     }

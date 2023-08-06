@@ -58,7 +58,7 @@ public class PublicEventController {
             throw new ValidationException("rangeStart cannot be later than rangeEnd");
         }
         return eventService.findPublishedEvents(startTime, endTime, categories, text, paid, onlyAvailable,
-                sort, PageRequest.of(from > 0 ? from / size : 0, size), request);
+                sort, PageRequest.of(from / size, size), request);
     }
 
     @ResponseStatus(value = HttpStatus.OK)

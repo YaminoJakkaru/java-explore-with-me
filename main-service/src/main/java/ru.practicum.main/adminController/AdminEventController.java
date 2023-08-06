@@ -55,6 +55,6 @@ public class AdminEventController {
         LocalDateTime endTime =  rangeEnd == null ?
                 null : LocalDateTime.parse(URLDecoder.decode(rangeEnd, StandardCharsets.UTF_8),formatter);
         return eventService.findEvents(startTime, endTime, users,states, categories,
-                PageRequest.of(from > 0 ? from / size : 0, size));
+                PageRequest.of(from/ size, size));
     }
 }
