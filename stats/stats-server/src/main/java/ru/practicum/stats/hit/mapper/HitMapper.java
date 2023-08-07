@@ -1,6 +1,6 @@
 package ru.practicum.stats.hit.mapper;
 
-import ru.practicum.stats.dto.StoredEndpointHitDto;
+import ru.practicum.stats.dto.hit.StoredEndpointHitDto;
 import ru.practicum.stats.hit.model.EndpointHit;
 
 public final class HitMapper {

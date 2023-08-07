@@ -2,8 +2,8 @@ package ru.practicum.stats.hit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.stats.dto.StoredEndpointHitDto;
-import ru.practicum.stats.hit.HitRepository;
+import ru.practicum.stats.dto.hit.StoredEndpointHitDto;
+import ru.practicum.stats.repository.HitRepository;
 import ru.practicum.stats.hit.mapper.HitMapper;
 
 
