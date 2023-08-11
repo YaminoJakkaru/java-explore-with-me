@@ -13,6 +13,5 @@ public interface ReactionRepository extends JpaRepository<Reaction,Long> {
 
     List<Reaction> findReactionByCommentId(long commentId);
 
-
     List<Reaction> findReactionsByCommentIdIn(List<Long> commentIds);
 }
