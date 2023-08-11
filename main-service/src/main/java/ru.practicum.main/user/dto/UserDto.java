@@ -1,6 +1,6 @@
 package ru.practicum.main.user.dto;
 
-import lombok.Builder;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 import ru.practicum.main.user.model.User;

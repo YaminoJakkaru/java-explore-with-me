@@ -3,7 +3,9 @@ package ru.practicum.main.handler;
 import lombok.extern.slf4j.Slf4j;
 import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.main.exception.DataValidationException;
 import ru.practicum.main.exception.NotFoundException;
@@ -22,6 +24,30 @@ public class ErrorHandler {
     @ResponseBody
     public ApiError handle(final MethodArgumentNotValidException e) {
         log.warn(Objects.requireNonNull(e.getFieldError()).getDefaultMessage());
+        return new ApiError()
+                .setMassage(e.getMessage())
+                .setReason("Incorrectly made request.")
+                .setStatus(HttpStatus.BAD_REQUEST.toString())
+                .setTimestamp(LocalDateTime.now());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ApiError handle(final HttpMessageNotReadableException e) {
+        log.warn(e.getMessage());
+        return new ApiError()
+                .setMassage(e.getMessage())
+                .setReason("Incorrectly made request.")
+                .setStatus(HttpStatus.BAD_REQUEST.toString())
+                .setTimestamp(LocalDateTime.now());
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ApiError handle(final MissingServletRequestParameterException e) {
+        log.warn(e.getMessage());
         return new ApiError()
                 .setMassage(e.getMessage())
                 .setReason("Incorrectly made request.")

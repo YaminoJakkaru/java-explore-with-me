@@ -18,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/admin/users")
 @Validated
-@Slf4j
 public class AdminUserController {
 
     private final UserService userService;
@@ -45,8 +44,6 @@ public class AdminUserController {
     public List<UserDto> getAllUsers(@RequestParam(required = false) List<Long> ids,
                                      @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                      @Positive @RequestParam(defaultValue = "10") Integer size) {
-        List<UserDto> userDtos = userService.getUsers(ids,  PageRequest.of(from/ size, size));
-        log.info(userDtos.toString());
-        return userDtos;
+        return userService.getUsers(ids,  PageRequest.of(from/ size, size));
     }
 }

@@ -24,7 +24,6 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/users/{userId}/events")
 @Validated
-@Slf4j
 public class PrivateEventController {
 
     private final EventService eventService;

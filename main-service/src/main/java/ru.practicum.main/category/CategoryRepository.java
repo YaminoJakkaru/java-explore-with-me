@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.main.category.model.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    @Transactional
+
     @Modifying
     @Query("update Category c set c.name = ?1 where c.id = ?2")
     int updateNameById(@NonNull String name, @NonNull long id);

@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto addUser(UserDto userDto) {
-        log.info("add user " + userDto.getName());
+        log.info("Add user " + userDto.getName());
         return userRepository.save(userDto.toUser()).toUserDto();
     }
 
@@ -51,5 +51,6 @@ public class UserServiceImpl implements UserService {
         if(response == 0) {
             throw new NotFoundException("User with id = " + userId + " not found");
         }
+        log.info("Remove user " + userId);
     }
 }
