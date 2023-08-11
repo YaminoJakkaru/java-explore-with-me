@@ -17,10 +17,7 @@ import ru.practicum.main.exception.DataValidationException;
 import ru.practicum.main.exception.NotFoundException;
 import ru.practicum.main.user.UserRepository;
 import ru.practicum.main.user.model.User;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 
