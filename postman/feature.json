@@ -926,7 +926,7 @@
 											"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
 											"        pm.collectionVariables.set(\"eid\", event.id);\r",
 											"        pm.collectionVariables.set(\"uid\", user.id);\r",
-											"       com = rnd.getComment(513);\r",
+											"       com = rnd.getComment(rnd.getComment(rnd.getWord(513)));\r",
 											"         pm.collectionVariables.set('response', com);\r",
 											"          pm.collectionVariables.set('request_body', com);\r",
 											"    } catch(err) {\r",
