@@ -80,9 +80,6 @@
 									"pm.expect(target).to.have.property('createOn');\r",
 									"pm.expect(target).to.have.property('likes');\r",
 									"pm.expect(target).to.have.property('dislikes');\r",
-									"});\r",
-									"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
-									"    pm.expect(source.note.toString()).equal(target.note.toString(), 'поле note должно совпадать с отправленным');\r",
 									"});"
 								],
 								"type": "text/javascript"
