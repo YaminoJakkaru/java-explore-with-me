@@ -51,7 +51,7 @@ public class ReactionServiceImpl implements ReactionService {
                 .setResponder(user)
                 .setPositive(positive);
         reactionRepository.save(reaction);
-        log.info("User " + userId + " reacted on comment " + commentId);
+        log.info("User " + userId + " add " + positive + " reaction on comment " + commentId);
     }
 
     @Transactional
