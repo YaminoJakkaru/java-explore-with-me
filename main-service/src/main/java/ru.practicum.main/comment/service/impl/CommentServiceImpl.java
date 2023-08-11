@@ -92,6 +92,7 @@ public class CommentServiceImpl implements CommentService {
         List<Reaction> reactions = reactionRepository.findReactionByCommentId(commentId);
         commentDto.setLikes(reactions.stream().filter(Reaction::getPositive).count());
         commentDto.setDislikes(reactions.size() - commentDto.getLikes());
+        log.info(commentDto.toString());
         return commentDto;
     }
 
