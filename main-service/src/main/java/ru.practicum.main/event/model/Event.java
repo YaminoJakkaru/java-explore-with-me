@@ -68,7 +68,7 @@ public class Event {
     @Column(name = "participant_limit", nullable = false)
     private long participantLimit;
 
-    @Column(name = "published_date",  columnDefinition = "TIMESTAMP")
+    @Column(name = "publish_date",  columnDefinition = "TIMESTAMP")
     private LocalDateTime publishedOn;
 
     @Column(name = "request_moderation", columnDefinition = "boolean default true")
